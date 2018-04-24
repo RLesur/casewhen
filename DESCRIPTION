@@ -1,0 +1,10 @@
+Package: casewhen
+Version: 0.0.0.9000
+Title: Reusable "case_when" Functions
+Description: With 'casewhen' package, you can create 'dplyr::case_when()' functions
+    that might be use many times.
+Authors@R: person("Romain", "Lesur", , "romain.lesur@gmail.com", c("aut", "cre"))
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+ByteCompile: true
