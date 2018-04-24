@@ -11,6 +11,7 @@ NULL
 #'
 #' @inheritDotParams dplyr::case_when
 #' @param vars A character vector of generic variable names.
+#' @return A function, usable in place of `dplyr::case_when`.
 #' @export
 #' @examples
 #' library(dplyr)
@@ -47,10 +48,20 @@ create_case_when <- function(..., vars = "x") {
   )
 }
 
+#' Get formulas
+#'
+#' `formulas` retrieves formulas from an object that depends on.
+#'
+#' @export
+#' @param x An object used to select a method.
+#' @param ... Other arguments passed to methods.
+#' @return A list of `formula` objects.
 formulas <- function(x, ...) UseMethod("formulas")
 
+#' @export
 formulas.case_when <- function(x, ...) get("formulas", envir = environment(x))
 
+#' @export
 print.case_when <- function(x, ...) {
   formulas <- formulas(x)
   n <- length(formulas)
