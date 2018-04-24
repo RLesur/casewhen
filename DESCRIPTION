@@ -18,5 +18,6 @@ Imports:
     rlang,
     utils
 Suggests: 
-    covr
+    covr,
+    testthat
 Roxygen: list(markdown = TRUE)
