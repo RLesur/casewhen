@@ -12,7 +12,7 @@ create_case_when(..., vars = "x")
   \item{}{}
 }}
 
-\item{vars}{A character vector of generic variable names.}
+\item{vars}{A character vector.}
 }
 \value{
 A function, usable in place of \code{dplyr::case_when}.

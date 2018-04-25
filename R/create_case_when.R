@@ -1,4 +1,5 @@
 #' @import rlang
+#' @importFrom assertthat assert_that
 #' @importFrom purrr map walk
 #' @importFrom dplyr case_when
 #' @importFrom crayon cyan magenta green
@@ -10,7 +11,7 @@ NULL
 #' This function allows to create reusable `dplyr::case_when()` functions.
 #'
 #' @inheritDotParams dplyr::case_when
-#' @param vars A character vector of generic variable names.
+#' @param vars A character vector.
 #' @return A function, usable in place of `dplyr::case_when`.
 #' @export
 #' @examples
@@ -30,6 +31,7 @@ NULL
 #' people %>%
 #'   mutate(sex_label = cw_sex(sex), seek_label = cw_sex(seek))
 create_case_when <- function(..., vars = "x") {
+  assertthat::assert_that(is.character(vars))
   fun_fmls <- purrr::map(rlang::set_names(vars), ~ rlang::missing_arg())
   fun_body <- substitute({
     for (name in var) {

@@ -41,7 +41,7 @@ people <-
 cw_sex <- create_case_when(x == "F" ~ "Woman",
                            x == "M" ~ "Man",
                            TRUE ~ as.character(x),
-                           vars = c("x"))
+                           vars = "x")
 
 print(cw_sex)
 #> <CASE WHEN>
