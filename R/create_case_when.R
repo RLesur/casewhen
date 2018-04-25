@@ -6,7 +6,7 @@
 #' @importFrom utils capture.output
 NULL
 
-#' A `case_when` Factory
+#' A `case_when` factory
 #'
 #' This function allows to create reusable `dplyr::case_when()` functions.
 #'

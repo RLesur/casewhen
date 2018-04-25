@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_case_when.R
 \name{create_case_when}
 \alias{create_case_when}
-\title{A \code{case_when} Factory}
+\title{A \code{case_when} factory}
 \usage{
 create_case_when(..., vars = "x")
 }
