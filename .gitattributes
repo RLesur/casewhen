@@ -1,2 +1,2 @@
-* linguist-vendored=FALSE
-*.R linguist-vendored
+* linguist-vendored
+*.R linguist-vendored=FALSE
