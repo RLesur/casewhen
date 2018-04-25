@@ -1,11 +1,11 @@
 context("test-create_case_when.R")
 
 test_that("x argument is a character vector", {
-  expect_error(create_case_when(TRUE ~ as.character(x), vars = 1))
+  expect_error(create_case_when(TRUE ~ x, vars = 1))
 })
 
 vars <- c("x", "y", "z")
-cw <- create_case_when(TRUE ~ as.character(x), vars = vars)
+cw <- create_case_when(TRUE ~ x, vars = vars)
 
 test_that("returned value is a closure", {
   expect_type(cw, "closure")
@@ -14,4 +14,12 @@ test_that("returned value is a closure", {
 test_that("returned function has correct formals with missing args", {
   expect_equal(rlang::fn_fmls_names(cw), vars)
   lapply(rlang::fn_fmls(cw), function(x) expect_equal(x, rlang::missing_arg()))
+})
+
+
+test_that("returned function is a case_when", {
+  cw <- create_case_when(x == 1 ~ "a",
+                         x == 2 ~ "b",
+                         TRUE ~ "z")
+  expect_equal(cw(1:3), c("a", "b", "z"))
 })
