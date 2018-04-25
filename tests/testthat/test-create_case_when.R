@@ -9,6 +9,8 @@ cw <- create_case_when(TRUE ~ x, vars = vars)
 
 test_that("returned value is a closure", {
   expect_type(cw, "closure")
+  expect_s3_class(cw, "function")
+  expect_s3_class(cw, "case_when")
 })
 
 test_that("returned function has correct formals with missing args", {
@@ -22,4 +24,14 @@ test_that("returned function is a case_when", {
                          x == 2 ~ "b",
                          TRUE ~ "z")
   expect_equal(cw(1:3), c("a", "b", "z"))
+})
+
+test_that("formulas method returns a list of formula", {
+  expect_type(formulas(cw), "list")
+  lapply(formulas(cw), function(x) expect_type(x, "language"))
+  lapply(formulas(cw), function(x) expect_s3_class(x, "formula"))
+})
+
+test_that("print method for case_when functions", {
+  expect_output(print(cw), "<CASE WHEN>")
 })
