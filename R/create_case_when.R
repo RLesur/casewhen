@@ -18,8 +18,8 @@ NULL
 #'
 #' people <- tribble(
 #'   ~name, ~sex, ~seek,
-#'   "Henry", "M", "F",
 #'   "Mary", "F", "M",
+#'   "Henry", "M", "F"
 #' )
 #'
 #' cw_sex <- create_case_when(x == "F" ~ "Woman",

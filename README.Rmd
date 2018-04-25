@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 # casewhen
-[![Travis build status](https://travis-ci.org/RLesur/casewhen.svg?branch=master)](https://travis-ci.org/RLesur/casewhen)[![Coverage status](https://codecov.io/gh/RLesur/casewhen/branch/master/graph/badge.svg)](https://codecov.io/github/RLesur/casewhen?branch=master)
+[![Travis build status](https://travis-ci.org/RLesur/casewhen.svg?branch=master)](https://travis-ci.org/RLesur/casewhen) [![Coverage status](https://codecov.io/gh/RLesur/casewhen/branch/master/graph/badge.svg)](https://codecov.io/github/RLesur/casewhen?branch=master)
 
 The goal of casewhen is to create reusable `dplyr::case_when()` functions.  
 `SAS` users may recognise a behavior close to the `SAS FORMATS`
@@ -28,9 +28,28 @@ devtools::install_github("RLesur/casewhen")
 ```
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+With `casewhen`, you can easily create reusable `dplyr::case_when()` functions.
 
-```{r example}
-## basic example code
+```{r example, message=FALSE}
+library(dplyr)
+library(casewhen)
+
+people <-
+  tribble(
+    ~name, ~sex, ~seek,
+    "Mary", "F", "M",
+    "Henry", "M", "F"
+  )
+
+cw_sex <- create_case_when(x == "F" ~ "Woman",
+                           x == "M" ~ "Man",
+                           TRUE ~ as.character(x),
+                           vars = c("x"))
+
+print(cw_sex)
+
+people %>% 
+  mutate(sex_label = cw_sex(sex), 
+         seek_label = cw_sex(seek))
 ```
 
