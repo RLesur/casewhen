@@ -4,6 +4,10 @@ test_that("x argument is a character vector", {
   expect_error(create_case_when(TRUE ~ x, vars = 1))
 })
 
+test_that("dots arguments are formulas", {
+  expect_error(create_case_when(1))
+})
+
 vars <- c("x", "y", "z")
 cw <- create_case_when(TRUE ~ x, vars = vars)
 

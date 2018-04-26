@@ -43,6 +43,11 @@ create_case_when <- function(..., vars = "x") {
     do.call(dplyr::case_when, forms)
   })
   formulas <- rlang::dots_list(...)
+  purrr::walk(formulas,
+              ~ assertthat::assert_that(rlang::is_formula(.x),
+                                        msg = "An argument is not a formula."
+              )
+  )
   var <- vars
   structure(
     rlang::new_function(fun_fmls, fun_body),
@@ -56,7 +61,7 @@ create_case_when <- function(..., vars = "x") {
 #'
 #' @export
 #' @param x An object used to select a method.
-#' @param ... Other arguments passed to methods.
+#' @param ... Other arguments passed on to methods.
 #' @return A list of `formula` objects.
 formulas <- function(x, ...) UseMethod("formulas")
 

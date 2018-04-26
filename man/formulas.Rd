@@ -9,7 +9,7 @@ formulas(x, ...)
 \arguments{
 \item{x}{An object used to select a method.}
 
-\item{...}{Other arguments passed to methods.}
+\item{...}{Other arguments passed on to methods.}
 }
 \value{
 A list of \code{formula} objects.
