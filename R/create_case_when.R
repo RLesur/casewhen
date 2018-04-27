@@ -1,5 +1,6 @@
 #' @import rlang
 #' @importFrom assertthat assert_that
+#' @importFrom pryr modify_lang
 #' @importFrom purrr map walk
 #' @importFrom dplyr case_when
 #' @importFrom crayon cyan magenta green
@@ -34,13 +35,31 @@ create_case_when <- function(..., vars = "x") {
   assertthat::assert_that(is.character(vars))
   fun_fmls <- purrr::map(rlang::set_names(vars), ~ rlang::missing_arg())
   fun_body <- substitute({
-    for (name in var) {
-      symb <- rlang::eval_bare(rlang::sym(name))
-      var <- rlang::eval_tidy(rlang::enquo(symb))
-      assign(name, var)
+    # for (name in var) {
+    #   symb <- rlang::eval_bare(rlang::sym(name))
+    #   var <- rlang::eval_tidy(rlang::enquo(symb))
+    #   assign(name, var)
+    # }
+    # forms <- purrr::map(formulas, rlang::`f_env<-`, value = environment())
+    match_call <- match.call()
+    args_call <- as.list(match_call[-1])
+    modify_vars <- function(x) {
+      if (is.name(x)) {
+        if (as.character(x) %in% names(args_call))
+          return(args_call[[as.character(x)]])
+      }
+      x
     }
-    forms <- purrr::map(formulas, rlang::`f_env<-`, value = environment())
-    do.call(dplyr::case_when, forms)
+    n <- length(formulas)
+    new_formulas <- vector("list", n)
+    for (i in seq_len(n)) {
+      lhs <- rlang::f_lhs(formulas[[i]])
+      rhs <- rlang::f_rhs(formulas[[i]])
+      new_lhs <- pryr::modify_lang(lhs, modify_vars)
+      new_rhs <- pryr::modify_lang(rhs, modify_vars)
+      new_formulas[[i]] <- rlang::new_formula(new_lhs, new_rhs, env = rlang::caller_env(2))
+    }
+    do.call(dplyr::case_when, new_formulas)
   })
   formulas <- rlang::dots_list(...)
   purrr::walk(formulas,

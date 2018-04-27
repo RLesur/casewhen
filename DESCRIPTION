@@ -15,6 +15,7 @@ Imports:
     assertthat,
     crayon,
     dplyr,
+    pryr,
     purrr,
     rlang,
     utils
