@@ -30,6 +30,26 @@ test_that("returned function is a case_when", {
   expect_equal(cw(1:3), c("a", "b", "z"))
 })
 
+test_that("returned function works with mutate", {
+  people <-
+    dplyr::tribble(
+      ~name, ~sex,
+      "Mary", "F",
+      "Henry", "M"
+    )
+  cw_sex <- create_case_when(x == "F" ~ "Woman",
+                             x == "M" ~ "Man",
+                             TRUE ~ as.character(x),
+                             vars = "x")
+  expect_equal(people %>% mutate(label = cw_sex(sex)),
+               dplyr::tribble(
+                 ~name, ~sex, ~label,
+                 "Mary", "F", "Woman",
+                 "Henry", "M", "Man"
+               )
+  )
+})
+
 test_that("formulas method returns a list of formula", {
   expect_type(formulas(cw), "list")
   lapply(formulas(cw), function(x) expect_type(x, "language"))

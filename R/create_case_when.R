@@ -57,7 +57,7 @@ create_case_when <- function(..., vars = "x") {
       rhs <- rlang::f_rhs(formulas[[i]])
       new_lhs <- pryr::modify_lang(lhs, modify_vars)
       new_rhs <- pryr::modify_lang(rhs, modify_vars)
-      new_formulas[[i]] <- rlang::new_formula(new_lhs, new_rhs, env = rlang::caller_env(2))
+      new_formulas[[i]] <- rlang::new_formula(new_lhs, new_rhs, env = rlang::caller_env())
     }
     do.call(dplyr::case_when, new_formulas)
   })
@@ -98,3 +98,4 @@ print.case_when <- function(x, ...) {
   cat(paste0(out, collapse = "\n"))
   invisible(x)
 }
+
