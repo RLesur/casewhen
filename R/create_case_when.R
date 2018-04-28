@@ -4,7 +4,7 @@
 #' @importFrom purrr map walk
 #' @importFrom dplyr case_when
 #' @importFrom crayon cyan magenta green
-#' @importFrom utils capture.output
+#' @importFrom utils capture.output getAnywhere
 NULL
 
 #' A `case_when` factory
@@ -100,7 +100,7 @@ print.case_when <- function(x, ...) {
 }
 
 add_sql_variant.NULL <- function(cw) {
-  sql_translate_env <- getAnywhere("sql_translate_env.NULL")$objs[[1]]
+  sql_translate_env <- utils::getAnywhere("sql_translate_env.NULL")$objs[[1]]
   variant <- sql_translate_env()
   scalar <- variant[["scalar"]]
   case_when <- scalar$case_when
