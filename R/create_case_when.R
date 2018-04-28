@@ -67,7 +67,7 @@ create_case_when <- function(..., vars = "x") {
                                         msg = "An argument is not a formula."
               )
   )
-  var <- vars
+  #var <- vars
   structure(
     rlang::new_function(fun_fmls, fun_body),
     class = c("case_when", "function")
@@ -88,6 +88,9 @@ formulas <- function(x, ...) UseMethod("formulas")
 formulas.case_when <- function(x, ...) get("formulas", envir = environment(x))
 
 #' @export
+variable.names.case_when <- function(object, ...) get("vars", envir = environment(object))
+
+#' @export
 print.case_when <- function(x, ...) {
   formulas <- formulas(x)
   n <- length(formulas)
@@ -105,5 +108,6 @@ add_sql_variant.NULL <- function(cw) {
   scalar <- variant[["scalar"]]
   case_when <- scalar$case_when
   cw_name <- deparse(substitute(cw))
+
   assign(cw_name, case_when, envir = scalar)
 }
