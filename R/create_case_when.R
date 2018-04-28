@@ -5,6 +5,7 @@
 #' @importFrom dplyr case_when
 #' @importFrom crayon cyan magenta green
 #' @importFrom utils capture.output getAnywhere
+#' @importFrom stats variable.names
 NULL
 
 #' A `case_when` factory

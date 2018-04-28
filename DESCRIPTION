@@ -18,6 +18,7 @@ Imports:
     pryr,
     purrr,
     rlang,
+    stats,
     utils
 Suggests: 
     covr,
