@@ -99,3 +99,11 @@ print.case_when <- function(x, ...) {
   invisible(x)
 }
 
+add_sql_variant.NULL <- function(cw) {
+  sql_translate_env <- getAnywhere("sql_translate_env.NULL")$objs[[1]]
+  variant <- sql_translate_env()
+  scalar <- variant[["scalar"]]
+  case_when <- scalar$case_when
+  cw_name <- deparse(substitute(cw))
+  assign(cw_name, case_when, envir = scalar)
+}
