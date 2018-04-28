@@ -1,5 +1,7 @@
 context("test-create_case_when.R")
 
+library(dplyr)
+
 test_that("x argument is a character vector", {
   expect_error(create_case_when(TRUE ~ x, vars = 1))
 })
@@ -41,7 +43,8 @@ test_that("returned function works with mutate", {
                              x == "M" ~ "Man",
                              TRUE ~ as.character(x),
                              vars = "x")
-  expect_equal(people %>% mutate(label = cw_sex(sex)),
+  people_label <- people %>% mutate(label = cw_sex(sex))
+  expect_equal(people_label,
                dplyr::tribble(
                  ~name, ~sex, ~label,
                  "Mary", "F", "Woman",
