@@ -2,6 +2,7 @@
 
 S3method(formulas,case_when)
 S3method(print,case_when)
+S3method(variable.names,case_when)
 export(create_case_when)
 export(formulas)
 import(rlang)
