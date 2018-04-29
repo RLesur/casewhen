@@ -10,7 +10,7 @@ status](https://codecov.io/gh/RLesur/casewhen/branch/master/graph/badge.svg)](ht
 
 The goal of casewhen is to create reusable `dplyr::case_when()`
 functions.  
-`SAS` users may recognise a behavior close to the `SAS FORMATS`
+`SAS` users may recognise a behavior close to the `SAS FORMATS`.
 
 ## Installation
 
@@ -25,7 +25,7 @@ devtools::install_github("RLesur/casewhen")
 ## Motivation
 
 During data wrangling with `dplyr`, one may use several times identical
-`case_when()` clauses in different stages. This can lead to a non-DRY
+`case_when()` clauses in different steps. This can lead to a non-DRY
 code. This package provides a convenient mean to define and reuse
 `dplyr::case_when()` functions.
 
@@ -96,7 +96,7 @@ starwars %>%
 ## `dbplyr` support
 
 This package allows you to use a `case_when` function with `dbplyr`. You
-first have to register the `SQL` translation:
+first have to register the `SQL` translation to your connection:
 
 ``` r
 library(dbplyr)
