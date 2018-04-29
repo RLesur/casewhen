@@ -95,8 +95,8 @@ starwars %>%
 
 ## `dbplyr` support
 
-This package allows you to use a `case_when` function with `dbplyr`. You
-first have to register the `SQL` translation to your connection:
+*`dbplyr` support is experimental.*  
+You first have to register the `SQL` translation to your connection:
 
 ``` r
 library(dbplyr)

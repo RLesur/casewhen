@@ -75,7 +75,8 @@ starwars %>%
 
 ## `dbplyr` support
 
-This package allows you to use a `case_when` function with `dbplyr`. You first have to register the `SQL` translation to your connection:
+*`dbplyr` support is experimental.*  
+You first have to register the `SQL` translation to your connection:
 
 ```{r dbplyr, message=FALSE}
 library(dbplyr)
@@ -86,3 +87,4 @@ add_sql_translate(cw_sex, con = con)
 # see the translation:
 translate_sql(cw_sex(gender, species), con = con)
 ```
+
