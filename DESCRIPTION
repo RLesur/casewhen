@@ -24,3 +24,7 @@ Suggests:
     covr,
     testthat
 Roxygen: list(markdown = TRUE)
+Collate: 
+    'casewhen-package.R'
+    'create_case_when.R'
+    'sql_variant.R'

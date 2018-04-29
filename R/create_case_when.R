@@ -134,7 +134,7 @@ print.case_when <- function(x, ...) {
       rhs <- rlang::f_rhs(formulas[[i]])
       new_lhs <- pryr::modify_lang(lhs, modify_vars)
       new_rhs <- pryr::modify_lang(rhs, modify_vars)
-      new_formulas[[i]] <- rlang::new_formula(new_lhs, new_rhs, env = rlang::caller_env())
+      new_formulas[[i]] <- rlang::new_formula(new_lhs, new_rhs, env = parent.frame())
     }
     do.call(fn, new_formulas)
   })
