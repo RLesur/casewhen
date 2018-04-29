@@ -2,7 +2,7 @@
 #' @importFrom assertthat assert_that
 #' @importFrom pryr modify_lang
 #' @importFrom purrr map walk
-#' @importFrom dplyr case_when sql_translate_env
+#' @importFrom dplyr case_when
 #' @importFrom crayon cyan magenta green
 #' @importFrom utils capture.output getAnywhere
 #' @importFrom stats variable.names
