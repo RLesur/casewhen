@@ -2,15 +2,26 @@
 % Please edit documentation in R/add_sql_translate.R
 \name{add_sql_translate}
 \alias{add_sql_translate}
-\title{Register a case_when function in a SQL translator}
+\alias{add_sql_translate.case_when}
+\title{Register a function in a SQL translator}
 \usage{
-add_sql_translate(cw, con = NULL)
+add_sql_translate(fn, con = NULL, ...)
+
+\method{add_sql_translate}{case_when}(fn, con = NULL, ...)
 }
 \arguments{
-\item{cw}{A case_when function.}
+\item{fn}{A function to register.}
 
-\item{con}{A connection.}
+\item{con}{A database connection.}
+
+\item{...}{Other arguments passed on to method.}
 }
 \description{
-Register a case_when function in a SQL translator
+Register a function in a SQL translator
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{case_when}: Register a case_when function in a SQL
+translate environment
+}}
+
