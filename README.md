@@ -7,6 +7,9 @@
 status](https://travis-ci.org/RLesur/casewhen.svg?branch=master)](https://travis-ci.org/RLesur/casewhen)
 [![Coverage
 status](https://codecov.io/gh/RLesur/casewhen/branch/master/graph/badge.svg)](https://codecov.io/github/RLesur/casewhen?branch=master)
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/casewhen)](https://cran.r-project.org/package=casewhen)
 
 The goal of casewhen is to create reusable `dplyr::case_when()`
 functions.  
