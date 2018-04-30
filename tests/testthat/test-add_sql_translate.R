@@ -20,7 +20,11 @@ test_that("translate sql works with SQLite", {
   cw3 <- create_case_when(y == 1 ~ TRUE, TRUE ~ FALSE, vars = "y")
   add_sql_translate(cw3, con = con)
   expect_equal(
-    capture.output(df %>% mutate(z = case_when(x == 1 ~ TRUE, TRUE ~ FALSE)) %>% show_query()),
-    capture.output(df %>% mutate(z = cw3(x)) %>% show_query())
+    utils::capture.output(
+      df %>% mutate(z = case_when(x == 1 ~ TRUE, TRUE ~ FALSE)) %>% show_query()
+    ),
+    utils::capture.output(
+      df %>% mutate(z = cw3(x)) %>% show_query()
+    )
   )
 })
