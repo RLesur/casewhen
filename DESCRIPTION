@@ -23,6 +23,7 @@ Imports:
 Suggests: 
     covr,
     dbplyr,
+    RSQLite,
     testthat
 Roxygen: list(markdown = TRUE)
 Collate: 
