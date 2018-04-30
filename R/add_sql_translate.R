@@ -24,8 +24,9 @@ add_sql_translate.case_when <- function(fn, con = NULL, ...) {
   formulas <- formulas(fn)
   vars <- variable.names(fn)
   name <- deparse(substitute(fn))
-  cw_sql <- .create_sql_case_when(!!! formulas, vars = vars, con = con)
+  cw_sql <- .create_sql_case_when(!!! formulas, vars = vars, con = NULL)
   add_sql_translate(cw_sql, con = NULL, name = name, ...)
+  cw_sql <- .create_sql_case_when(!!! formulas, vars = vars, con = con)
   add_sql_translate(cw_sql, con = con, name = name, ...)
 }
 
