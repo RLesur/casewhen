@@ -10,15 +10,23 @@ LazyData: true
 ByteCompile: true
 RoxygenNote: 6.0.1
 Depends: 
-    R (>= 3.1)
+    R (>= 3.2)
 Imports:
-    assertthat,
+    assertthat (>= 0.2.0),
     crayon,
-    dplyr,
-    purrr,
-    rlang,
+    dplyr (>= 0.7.4),
+    pryr,
+    purrr (>= 0.2.4),
+    rlang (>= 0.1.6),
+    stats,
     utils
 Suggests: 
     covr,
+    dbplyr,
+    RSQLite,
     testthat
 Roxygen: list(markdown = TRUE)
+Collate: 
+    'create_case_when.R'
+    'add_sql_translate.R'
+    'casewhen-package.R'

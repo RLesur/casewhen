@@ -13,10 +13,10 @@ knitr::opts_chunk$set(
 )
 ```
 # casewhen
-[![Travis build status](https://travis-ci.org/RLesur/casewhen.svg?branch=master)](https://travis-ci.org/RLesur/casewhen) [![Coverage status](https://codecov.io/gh/RLesur/casewhen/branch/master/graph/badge.svg)](https://codecov.io/github/RLesur/casewhen?branch=master)
+[![Travis build status](https://travis-ci.org/RLesur/casewhen.svg?branch=master)](https://travis-ci.org/RLesur/casewhen) [![Coverage status](https://codecov.io/gh/RLesur/casewhen/branch/master/graph/badge.svg)](https://codecov.io/github/RLesur/casewhen?branch=master) [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental) [![CRAN status](https://www.r-pkg.org/badges/version/casewhen)](https://cran.r-project.org/package=casewhen)
 
 The goal of casewhen is to create reusable `dplyr::case_when()` functions.  
-`SAS` users may recognise a behavior close to the `SAS FORMATS`
+`SAS` users may recognise a behavior close to the `SAS FORMATS`.
 
 ## Installation
 
@@ -26,11 +26,16 @@ You can install the development version from [GitHub](https://github.com/) with:
 # install.packages("devtools")
 devtools::install_github("RLesur/casewhen")
 ```
-## Example
 
-With `casewhen`, you can easily create reusable `dplyr::case_when()` functions.
+## Motivation  
 
-```{r example, message=FALSE}
+During data wrangling with `dplyr`, one may use several times identical `case_when()` clauses in different steps. This can lead to a non-DRY code. This package provides a convenient mean to define and reuse `dplyr::case_when()` functions.  
+
+## Examples
+
+With `casewhen`, you can easily create reusable `dplyr::case_when()` functions with the function `create_case_when()`:
+
+```{r example1, message=FALSE}
 library(dplyr)
 library(casewhen)
 
@@ -46,10 +51,40 @@ cw_sex <- create_case_when(x == "F" ~ "Woman",
                            TRUE ~ as.character(x),
                            vars = "x")
 
-print(cw_sex)
-
 people %>% 
   mutate(sex_label = cw_sex(sex), 
          seek_label = cw_sex(seek))
+```
+
+Reusing a `case_when()` function is mainly convenient when the same transformation is performed on different datasets. 
+
+```{r example2, message=FALSE}
+cw_sex <- create_case_when(x == "F" | x == "female" & y == "Human" ~ "Woman",
+                           x == "M" | x == "male" & y == "Human" ~ "Man",
+                           TRUE ~ as.character(x),
+                           vars = c("x", "y"))
+
+people %>% 
+  mutate(sex_label = cw_sex(sex, "Human"))
+
+starwars %>%
+  mutate(sex_label = cw_sex(gender, species)) %>%
+  select(name, gender, species, sex_label) %>%
+  head()
+```
+
+## `dbplyr` support
+
+*`dbplyr` support is experimental.*  
+You first have to register the `SQL` translation to your connection:
+
+```{r dbplyr, message=FALSE}
+library(dbplyr)
+
+con <- NULL # use a connection instead
+# register the case_when function:
+add_sql_translate(cw_sex, con = con)
+# see the translation:
+translate_sql(cw_sex(gender, species), con = con)
 ```
 

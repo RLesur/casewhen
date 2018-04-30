@@ -1,5 +1,7 @@
 context("test-create_case_when.R")
 
+library(dplyr)
+
 test_that("x argument is a character vector", {
   expect_error(create_case_when(TRUE ~ x, vars = 1))
 })
@@ -30,10 +32,37 @@ test_that("returned function is a case_when", {
   expect_equal(cw(1:3), c("a", "b", "z"))
 })
 
+test_that("returned function works with mutate", {
+  people <-
+    dplyr::tribble(
+      ~name, ~sex,
+      "Mary", "F",
+      "Henry", "M"
+    )
+  cw_sex <- create_case_when(x == "F" ~ "Woman",
+                             x == "M" ~ "Man",
+                             TRUE ~ as.character(x),
+                             vars = "x")
+  people_label <- people %>% mutate(label = cw_sex(sex))
+  expect_equal(people_label,
+               dplyr::tribble(
+                 ~name, ~sex, ~label,
+                 "Mary", "F", "Woman",
+                 "Henry", "M", "Man"
+               )
+  )
+})
+
 test_that("formulas method returns a list of formula", {
   expect_type(formulas(cw), "list")
   lapply(formulas(cw), function(x) expect_type(x, "language"))
   lapply(formulas(cw), function(x) expect_s3_class(x, "formula"))
+})
+
+test_that("variable.name returns the vars argument", {
+  vars <- c("x", "y", "z")
+  cw <- create_case_when(TRUE ~ x, vars = vars)
+  expect_equal(vars, variable.names(cw))
 })
 
 test_that("print method for case_when functions", {
