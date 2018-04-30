@@ -22,7 +22,7 @@ Imports:
     utils
 Suggests: 
     covr,
-    dbplyr,
+    dbplyr (>= 1.1.0),
     RSQLite,
     testthat
 Roxygen: list(markdown = TRUE)
