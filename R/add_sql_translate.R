@@ -24,19 +24,9 @@ add_sql_translate.case_when <- function(fn, con = NULL, ...) {
   formulas <- formulas(fn)
   vars <- variable.names(fn)
   name <- deparse(substitute(fn))
-  cw_sql <- .create_sql_case_when(!!! formulas, vars = vars, con = NULL)
+  cw_sql <- create_sql_case_when(!!! formulas, vars = vars, con = NULL)
   add_sql_translate(cw_sql, con = NULL, name = name, ...)
-  cw_sql <- .create_sql_case_when(!!! formulas, vars = vars, con = con)
+  cw_sql <- create_sql_case_when(!!! formulas, vars = vars, con = con)
   add_sql_translate(cw_sql, con = con, name = name, ...)
 }
 
-.create_sql_case_when <- function(..., vars = "x", con = NULL) {
-  formulas <- rlang::dots_list(...)
-  case_when_con <- dplyr::sql_translate_env(con = con)[["scalar"]]$case_when
-  args <- c(formulas, list(vars = vars, fn = case_when_con))
-  cw <- do.call(.create_case_when, args)
-  structure(
-    do.call(.create_case_when, args),
-    class = c("sql_case_when", "function")
-  )
-}

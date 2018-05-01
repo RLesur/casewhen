@@ -59,7 +59,7 @@ test_that("formulas method returns a list of formula", {
   lapply(formulas(cw), function(x) expect_s3_class(x, "formula"))
 })
 
-test_that("variable.name returns the vars argument", {
+test_that("variable.names returns the vars argument", {
   vars <- c("x", "y", "z")
   cw <- create_case_when(TRUE ~ x, vars = vars)
   expect_equal(vars, variable.names(cw))

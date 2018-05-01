@@ -14,6 +14,7 @@ Depends:
 Imports:
     assertthat (>= 0.2.0),
     crayon,
+    dbplyr (>= 1.1.0),
     dplyr (>= 0.7.4),
     methods,
     pryr,
@@ -23,7 +24,6 @@ Imports:
     utils
 Suggests: 
     covr,
-    dbplyr (>= 1.1.0),
     RSQLite,
     testthat
 Roxygen: list(markdown = TRUE)

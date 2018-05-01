@@ -36,10 +36,35 @@ create_case_when <- function(..., vars = "x") {
   formulas <- rlang::dots_list(...)
   structure(
     .create_case_when(!!! formulas, vars = vars),
-    class = c("case_when", "function")
+    class = c("dplyr_case_when", "case_when", "function")
   )
 }
 setOldClass("case_when")
+
+#' Create a SQL translation of a case_when function
+#'
+#' @param ... A sequence of thwo sided formulas. The left hand side (LHS)
+#'     determines which values match this case.The right hand side (RHS)
+#'     provides the replacement value.
+#'
+#' The LHS must evaluate to a logical vector. Each logical vector can
+#'     either have length 1 or a common length. All RHSs must evaluate to
+#'     the same type of vector.
+#'
+#' These dots are evaluated with [explicit splicing](dplyr::tidy-dots).
+#' @inheritParams create_case_when
+#' @inheritParams dplyr::sql_translate_env
+#' @keywords internal
+#' @export
+create_sql_case_when <- function(..., vars = "x", con = NULL) {
+  formulas <- rlang::dots_list(...)
+  case_when_con <- dplyr::sql_translate_env(con = con)$scalar$case_when
+  args <- c(formulas, list(vars = vars, fn = case_when_con))
+  structure(
+    do.call(.create_case_when, args),
+    class = c("sql_case_when", "case_when", "function")
+  )
+}
 
 #' Get formulas
 #'
@@ -100,4 +125,14 @@ print.case_when <- function(x, ...) {
               )
   )
   rlang::new_function(fun_fmls, fun_body)
+}
+
+.translate_to_sql <- function(cw_fn, con) {
+  if (is.list(cw_fn)) {
+    return(lapply(cw_fn, .translate_to_sql, con = con))
+  } else {
+    formulas <- formulas(cw_fn)
+    vars <- variable.names(cw_fn)
+    create_sql_case_when(!!! formulas, vars = vars, con = con)
+  }
 }
