@@ -33,3 +33,8 @@ add_custom_translation.DBIConnection <- function(object, ...) {
                             )
   new(new_class, custom_translation, object)
 }
+
+#' @export
+sql_translate_env.CustomTranslation <- function(con) {
+  con@sql_translate_env
+}
