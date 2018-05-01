@@ -1,4 +1,4 @@
-#' @import rlang
+#' @import rlang methods
 #' @importFrom assertthat assert_that
 #' @importFrom pryr modify_lang
 #' @importFrom purrr map walk
@@ -39,6 +39,7 @@ create_case_when <- function(..., vars = "x") {
     class = c("case_when", "function")
   )
 }
+setOldClass("case_when")
 
 #' Get formulas
 #'
