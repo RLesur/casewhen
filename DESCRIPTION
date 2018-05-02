@@ -14,7 +14,9 @@ Depends:
 Imports:
     assertthat (>= 0.2.0),
     crayon,
+    dbplyr (>= 1.1.0),
     dplyr (>= 0.7.4),
+    methods,
     pryr,
     purrr (>= 0.2.4),
     rlang (>= 0.1.6),
@@ -22,11 +24,10 @@ Imports:
     utils
 Suggests: 
     covr,
-    dbplyr (>= 1.1.0),
     RSQLite,
     testthat
 Roxygen: list(markdown = TRUE)
 Collate: 
-    'create_case_when.R'
-    'add_sql_translate.R'
     'casewhen-package.R'
+    'create_case_when.R'
+    'add_case_when.R'

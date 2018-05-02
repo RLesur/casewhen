@@ -29,7 +29,8 @@ devtools::install_github("RLesur/casewhen")
 
 During data wrangling with `dplyr`, one may use several times identical
 `case_when()` clauses in different steps. This can lead to a non-DRY
-code. This package provides a convenient mean to define and reuse
+code.  
+This package provides a convenient mean to define and reuse
 `dplyr::case_when()` functions.
 
 ## Examples
@@ -64,17 +65,18 @@ people %>%
 ```
 
 Reusing a `case_when()` function is mainly convenient when the same
-transformation is performed on different
-datasets.
+transformation is performed across different datasets.
 
 ``` r
-cw_sex <- create_case_when(x == "F" | x == "female" & y == "Human" ~ "Woman",
-                           x == "M" | x == "male" & y == "Human" ~ "Man",
-                           TRUE ~ as.character(x),
-                           vars = c("x", "y"))
+cw_sexyverse <- 
+  create_case_when(x == "F" | x == "female" & y == "Human" ~ "Woman",
+                   x == "M" | x == "male" & y == "Human" ~ "Man",
+                   TRUE ~ as.character(x),
+                   vars = c("x", "y")
+                   )
 
 people %>% 
-  mutate(sex_label = cw_sex(sex, "Human"))
+  mutate(sex_label = cw_sexyverse(sex, "Human"))
 #> # A tibble: 2 x 4
 #>   name  sex   seek  sex_label
 #>   <chr> <chr> <chr> <chr>    
@@ -82,7 +84,7 @@ people %>%
 #> 2 Henry M     F     Man
 
 starwars %>%
-  mutate(sex_label = cw_sex(gender, species)) %>%
+  mutate(sex_label = cw_sexyverse(gender, species)) %>%
   select(name, gender, species, sex_label) %>%
   head()
 #> # A tibble: 6 x 4
@@ -98,20 +100,53 @@ starwars %>%
 
 ## `dbplyr` support
 
-*`dbplyr` support is experimental.*  
-You first have to register the `SQL` translation to your connection:
+You only have to register the `case_when` functions to your connection:
 
 ``` r
-library(dbplyr)
+con <- 
+  DBI::dbConnect(RSQLite::SQLite(), ":memory:") %>%
+  add_case_when(cw_sex, cw_sexyverse)
 
-con <- NULL # use a connection instead
-# register the case_when function:
-add_sql_translate(cw_sex, con = con)
-# see the translation:
-translate_sql(cw_sex(gender, species), con = con)
-#> <SQL> CASE
-#> WHEN ("gender" = 'F' OR "gender" = 'female' AND "species" = 'Human') THEN ('Woman')
-#> WHEN ("gender" = 'M' OR "gender" = 'male' AND "species" = 'Human') THEN ('Man')
-#> WHEN (TRUE) THEN (CAST("gender" AS TEXT))
-#> END
+people_db <- copy_to(con, people)
+starwars_db <- copy_to(con, starwars %>% select(name, gender, species))
+
+people_db %>% 
+  mutate(sex_label = cw_sex(sex), 
+         seek_label = cw_sex(seek)) %>%
+  show_query()
+#> <SQL>
+#> SELECT `name`, `sex`, `seek`, CASE
+#> WHEN (`sex` = 'F') THEN ('Woman')
+#> WHEN (`sex` = 'M') THEN ('Man')
+#> WHEN (1) THEN (CAST(`sex` AS TEXT))
+#> END AS `sex_label`, CASE
+#> WHEN (`seek` = 'F') THEN ('Woman')
+#> WHEN (`seek` = 'M') THEN ('Man')
+#> WHEN (1) THEN (CAST(`seek` AS TEXT))
+#> END AS `seek_label`
+#> FROM `people`
+
+people_db %>%
+  mutate(sex_label = cw_sexyverse(sex, "Human")) %>%
+  show_query()
+#> <SQL>
+#> SELECT `name`, `sex`, `seek`, CASE
+#> WHEN (`sex` = 'F' OR `sex` = 'female' AND 'Human' = 'Human') THEN ('Woman')
+#> WHEN (`sex` = 'M' OR `sex` = 'male' AND 'Human' = 'Human') THEN ('Man')
+#> WHEN (1) THEN (CAST(`sex` AS TEXT))
+#> END AS `sex_label`
+#> FROM `people`
+
+starwars_db %>%
+  mutate(sex_label = cw_sexyverse(gender, species)) %>%
+  show_query()
+#> <SQL>
+#> SELECT `name`, `gender`, `species`, CASE
+#> WHEN (`gender` = 'F' OR `gender` = 'female' AND `species` = 'Human') THEN ('Woman')
+#> WHEN (`gender` = 'M' OR `gender` = 'male' AND `species` = 'Human') THEN ('Man')
+#> WHEN (1) THEN (CAST(`gender` AS TEXT))
+#> END AS `sex_label`
+#> FROM `starwars %>% select(name, gender, species)`
+
+DBI::dbDisconnect(con)
 ```
