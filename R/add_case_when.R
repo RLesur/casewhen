@@ -31,7 +31,6 @@ add_case_when <-
 #' @export
 add_case_when.DBIConnection <- function(con, ...) {
   fn_list <- list(...)
-  lapply(fn_list, function(x) assertthat::assert_that(inherits(x, "case_when")))
 
   fn_names <- names(fn_list)
   # Ensure that each element of fn_names has a name
@@ -43,6 +42,10 @@ add_case_when.DBIConnection <- function(con, ...) {
     names(fn_list) <- ifelse(nzchar(fn_names), fn_names, as.character(dots_args))
   }
 
+  # TODO: don't throw an error
+  lapply(fn_list, function(x) assertthat::assert_that(inherits(x, "case_when")))
+
+  # TODO: don't throw an error
   # Throw an error if a function's name is reserved
   if (any(forbidden <- names(fn_list) %in% reserved_names))
     stop(paste(names(fn_list)[forbidden], collapse = ", "), ": reserved word(s).")

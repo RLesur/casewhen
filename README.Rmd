@@ -78,7 +78,7 @@ starwars %>%
 
 ## `dbplyr` support
 
-You first have to register the `case_when` functions to your connection:
+You only have to register the `case_when` functions to your connection:
 
 ```{r dbplyr}
 con <- 
