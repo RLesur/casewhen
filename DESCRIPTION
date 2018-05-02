@@ -28,7 +28,6 @@ Suggests:
     testthat
 Roxygen: list(markdown = TRUE)
 Collate: 
-    'create_case_when.R'
-    'add_sql_translate.R'
     'casewhen-package.R'
-    'customised_translation.R'
+    'create_case_when.R'
+    'add_case_when.R'

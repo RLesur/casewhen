@@ -1,4 +1,5 @@
 #' @include create_case_when.R
+#' @importFrom dplyr sql_translate_env
 #' @importFrom dbplyr sql_variant sql_translator
 NULL
 
@@ -15,7 +16,7 @@ sql_translate_env.CustomTranslation <- function(con) {
   con@sql_translate_env
 }
 
-#' Add a customised translation to an connection
+#' Add a customised translation to a connection
 #' @param con A database connection.
 #' @param ... Other arguments.
 #' @export

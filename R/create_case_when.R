@@ -1,3 +1,4 @@
+#' @include casewhen-package.R
 #' @import rlang methods
 #' @importFrom assertthat assert_that
 #' @importFrom pryr modify_lang
@@ -39,7 +40,6 @@ create_case_when <- function(..., vars = "x") {
     class = c("dplyr_case_when", "case_when", "function")
   )
 }
-setOldClass("case_when")
 
 #' Create a SQL translation of a case_when function
 #'
