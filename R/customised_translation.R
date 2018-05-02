@@ -6,6 +6,8 @@ setOldClass("sql_variant")
 
 cacheClasses <- new.env(parent = emptyenv())
 
+reserved_names <- names(dplyr::sql_translate_env(NULL))
+
 setClass("CustomTranslation", slots = list(sql_translate_env = "sql_variant"))
 
 #' @export
@@ -13,20 +15,20 @@ sql_translate_env.CustomTranslation <- function(con) {
   con@sql_translate_env
 }
 
-#' Add a customised translation to an object
-#' @param object An object.
+#' Add a customised translation to an connection
+#' @param con A database connection.
 #' @param ... Other arguments.
 #' @export
-add_custom_translation <-
-  function(object, ...) UseMethod("add_custom_translation")
+add_case_when <-
+  function(con, ...) UseMethod("add_case_when")
 
 #' Add a custom SQL translation to a DBI connection
 #'
 #' @return A new DBIConnection object.
-#' @param object A DBIConnection object.
+#' @param con A DBIConnection object.
 #' @param ... Not used.
 #' @export
-add_custom_translation.DBIConnection <- function(object, ...) {
+add_case_when.DBIConnection <- function(con, ...) {
   fn_list <- list(...)
   lapply(fn_list, function(x) assertthat::assert_that(inherits(x, "case_when")))
 
@@ -40,13 +42,13 @@ add_custom_translation.DBIConnection <- function(object, ...) {
     names(fn_list) <- ifelse(nzchar(fn_names), fn_names, as.character(dots_args))
   }
 
-  # Throw an error if case_when is in the named list
-  if ("case_when" %in% names(fn_list))
-    stop("case_when function is reserved and cannot be overrided.")
+  # Throw an error if a function's name is reserved
+  if (any(forbidden <- names(fn_list) %in% reserved_names))
+    stop(paste(names(fn_list)[forbidden], collapse = ", "), ": reserved word(s).")
 
-  if (!inherits(object, "CustomTranslation")) {
-    # Here, object is a pure DBIConnection
-    connection_class <- class(object)
+  if (!inherits(con, "CustomTranslation")) {
+    # Here, con is a pure DBIConnection
+    connection_class <- class(con)
     new_class <- paste0("CustomisedTranslation", connection_class)
     if (!isClass(new_class))
       setClass(new_class,
@@ -54,15 +56,15 @@ add_custom_translation.DBIConnection <- function(object, ...) {
                where = cacheClasses
       )
   } else {
-    new_class <- class(object)
+    new_class <- class(con)
   }
 
-  translate_env <- dplyr::sql_translate_env(object)
+  translate_env <- dplyr::sql_translate_env(con)
 
   variant_translate_env <- dbplyr::sql_variant(
     scalar = dbplyr::sql_translator(
       .parent = translate_env$scalar,
-      .funs = .translate_to_sql(fn_list, con = object)
+      .funs = .translate_to_sql(fn_list, con = con)
     ),
     aggregate = translate_env$aggregate,
     window = translate_env$window
@@ -71,5 +73,5 @@ add_custom_translation.DBIConnection <- function(object, ...) {
   custom_translation <- new("CustomTranslation",
                             sql_translate_env = variant_translate_env
                             )
-  new(new_class, custom_translation, object)
+  new(new_class, custom_translation, con)
 }

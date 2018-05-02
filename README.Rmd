@@ -29,7 +29,8 @@ devtools::install_github("RLesur/casewhen")
 
 ## Motivation  
 
-During data wrangling with `dplyr`, one may use several times identical `case_when()` clauses in different steps. This can lead to a non-DRY code. This package provides a convenient mean to define and reuse `dplyr::case_when()` functions.  
+During data wrangling with `dplyr`, one may use several times identical `case_when()` clauses in different steps. This can lead to a non-DRY code.  
+This package provides a convenient mean to define and reuse `dplyr::case_when()` functions.  
 
 ## Examples
 
@@ -56,35 +57,50 @@ people %>%
          seek_label = cw_sex(seek))
 ```
 
-Reusing a `case_when()` function is mainly convenient when the same transformation is performed on different datasets. 
+Reusing a `case_when()` function is mainly convenient when the same transformation is performed across different datasets. 
 
 ```{r example2, message=FALSE}
-cw_sex <- create_case_when(x == "F" | x == "female" & y == "Human" ~ "Woman",
-                           x == "M" | x == "male" & y == "Human" ~ "Man",
-                           TRUE ~ as.character(x),
-                           vars = c("x", "y"))
+cw_sexyverse <- 
+  create_case_when(x == "F" | x == "female" & y == "Human" ~ "Woman",
+                   x == "M" | x == "male" & y == "Human" ~ "Man",
+                   TRUE ~ as.character(x),
+                   vars = c("x", "y")
+                   )
 
 people %>% 
-  mutate(sex_label = cw_sex(sex, "Human"))
+  mutate(sex_label = cw_sexyverse(sex, "Human"))
 
 starwars %>%
-  mutate(sex_label = cw_sex(gender, species)) %>%
+  mutate(sex_label = cw_sexyverse(gender, species)) %>%
   select(name, gender, species, sex_label) %>%
   head()
 ```
 
 ## `dbplyr` support
 
-*`dbplyr` support is experimental.*  
-You first have to register the `SQL` translation to your connection:
+You first have to register the `case_when` functions to your connection:
 
-```{r dbplyr, message=FALSE}
-library(dbplyr)
+```{r dbplyr}
+con <- 
+  DBI::dbConnect(RSQLite::SQLite(), ":memory:") %>%
+  add_case_when(cw_sex, cw_sexyverse)
 
-con <- NULL # use a connection instead
-# register the case_when function:
-add_sql_translate(cw_sex, con = con)
-# see the translation:
-translate_sql(cw_sex(gender, species), con = con)
+people_db <- copy_to(con, people)
+starwars_db <- copy_to(con, starwars %>% select(name, gender, species))
+
+people_db %>% 
+  mutate(sex_label = cw_sex(sex), 
+         seek_label = cw_sex(seek)) %>%
+  show_query()
+
+people_db %>%
+  mutate(sex_label = cw_sexyverse(sex, "Human")) %>%
+  show_query()
+
+starwars_db %>%
+  mutate(sex_label = cw_sexyverse(gender, species)) %>%
+  show_query()
+
+DBI::dbDisconnect(con)
 ```
 
