@@ -16,6 +16,10 @@ cw_sex <- create_case_when(x == "F" ~ "Woman",
                            TRUE ~ as.character(x),
                            vars = "x")
 
+test_that("add_case_when works without dots argument", {
+  expect_silent(add_case_when(con))
+})
+
 test_that("new connection object class", {
   expect_s4_class(add_case_when(con, cw_sex), class(con))
   expect_s4_class(add_case_when(con, cw_sex), "CustomTranslation")
