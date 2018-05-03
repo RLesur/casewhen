@@ -66,7 +66,10 @@ create_sql_case_when <- function(..., vars = "x", con = NULL) {
   )
 }
 
-is_case_when <- function(x) inherits(x, "case_when")
+is_case_when <- function(x) {
+  if (is.list(x)) return(vapply(x, is_case_when, FUN.VALUE = logical(1)))
+  inherits(x, "case_when")
+}
 
 #' Get formulas
 #'
