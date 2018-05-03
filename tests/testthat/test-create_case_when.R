@@ -91,3 +91,16 @@ test_that("print method for case_when functions", {
   expect_output(print(cw), "<CASE WHEN>")
   expect_output(print(cw_sql), "<CASE WHEN>")
 })
+
+test_that(".translate_to_sql", {
+  cw_sex <- create_case_when(x == "F" ~ "Woman",
+                             x == "M" ~ "Man",
+                             TRUE ~ as.character(x),
+                             vars = "x")
+
+  cw_sql_sex <- create_sql_case_when(x == "F" ~ "Woman",
+                                     x == "M" ~ "Man",
+                                     TRUE ~ as.character(x),
+                                     vars = "x")
+  expect_equivalent(cw_sql_sex, .translate_to_sql(cw_sex, con = NULL))
+})
