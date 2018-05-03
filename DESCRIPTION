@@ -24,7 +24,6 @@ Imports:
     utils
 Suggests: 
     covr,
-    DBI,
     RSQLite,
     testthat
 Roxygen: list(markdown = TRUE)

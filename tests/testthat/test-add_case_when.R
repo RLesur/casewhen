@@ -17,8 +17,8 @@ cw_sex <- create_case_when(x == "F" ~ "Woman",
                            vars = "x")
 
 test_that("new connection object class", {
-  expect_s4_class(add_case_when(con), class(con))
-  expect_s4_class(add_case_when(con), "CustomTranslation")
+  expect_s4_class(add_case_when(con, cw_sex), class(con))
+  expect_s4_class(add_case_when(con, cw_sex), "CustomTranslation")
 })
 
 test_that("request with new conn leads to the same result than local computation", {
