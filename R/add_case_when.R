@@ -49,6 +49,13 @@ add_case_when.DBIConnection <- function(con, ...) {
   fn_names <- names(fn_list)
 
   # Ensure that each element of fn_names is named
+  # Before doing this, we have to ensure that fn_list
+  # has not a length of 0. Otherwise, the code fails for
+  # R 3.2 and 3.3.
+  if (length(fn_list) == 0) {
+    warning("No function to add. Returning original connection object...\n")
+    return(con)
+  }
   dots_args <- as.list(match.call()[-(1:2)])
   if (is.null(fn_names)) {
     names(fn_list) <- as.character(dots_args)
