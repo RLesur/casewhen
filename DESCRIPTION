@@ -29,5 +29,6 @@ Suggests:
 Roxygen: list(markdown = TRUE)
 Collate: 
     'casewhen-package.R'
+    'utils.R'
     'create_case_when.R'
     'add_case_when.R'

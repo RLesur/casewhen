@@ -1,4 +1,4 @@
-#' @include casewhen-package.R
+#' @include utils.R
 #' @import rlang methods
 #' @importFrom assertthat assert_that
 #' @importFrom pryr modify_lang
@@ -66,6 +66,8 @@ create_sql_case_when <- function(..., vars = "x", con = NULL) {
   )
 }
 
+is_case_when <- function(x) inherits(x, "case_when")
+
 #' Get formulas
 #'
 #' `formulas` retrieves formulas from an object that depends on.
@@ -85,11 +87,18 @@ variable.names.case_when <- function(object, ...) get("vars", envir = environmen
 #' @export
 print.case_when <- function(x, ...) {
   formulas <- formulas(x)
-  n <- length(formulas)
+  var_names <- variable.names(x)
+  n_forms <- length(formulas)
+  n_vars <- length(var_names)
   out <- utils::capture.output(purrr::walk(formulas, print, showEnv = FALSE))
-  out <- c(crayon::cyan("<CASE WHEN>"),
-           crayon::magenta(paste(n, "conditions:")),
-           crayon::green(paste("->", out)), "")
+  out <- c(
+    crayon::cyan("<CASE WHEN>"),
+    crayon::magenta(n_vars, paste0("variable", plural(var_names), ":"),
+                    paste(var_names, collapse = ", ")
+                    ),
+    crayon::magenta(n_forms, paste0("condition", plural(formulas), ":")),
+    crayon::green(paste("->", out)), ""
+  )
   cat(paste0(out, collapse = "\n"))
   invisible(x)
 }

@@ -17,7 +17,7 @@ cw_sex <- create_case_when(x == "F" ~ "Woman",
                            vars = "x")
 
 test_that("add_case_when works without dots argument", {
-  con2 <- add_case_when(con)
+  expect_warning(con2 <- add_case_when(con))
   expect_equal(con, con2)
 })
 
