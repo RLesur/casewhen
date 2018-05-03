@@ -31,8 +31,8 @@ add_case_when <-
 #' @export
 add_case_when.DBIConnection <- function(con, ...) {
   fn_list <- list(...)
-  if (is.null(fn_list)) return(con)
-  if (any(vapply(fn_list, function(x) is.null(x), FUN.VALUE = logical(1)))) return(con)
+  if (length(fn_list) == 0) return(con)
+  #if (any(vapply(fn_list, function(x) is.null(x), FUN.VALUE = logical(1)))) return(con)
 
   fn_names <- names(fn_list)
   # Ensure that each element of fn_names has a name

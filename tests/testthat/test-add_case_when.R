@@ -17,7 +17,8 @@ cw_sex <- create_case_when(x == "F" ~ "Woman",
                            vars = "x")
 
 test_that("add_case_when works without dots argument", {
-  expect_silent(add_case_when(con))
+  con2 <- add_case_when(con)
+  expect_equal(con, con2)
 })
 
 test_that("new connection object class", {
