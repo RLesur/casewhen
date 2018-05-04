@@ -80,7 +80,19 @@ starwars %>%
 
 You only have to register the `case_when` functions to your connection:
 
-```{r dbplyr}
+```{r, include=FALSE}
+knitr::knit_hooks$set(
+  message = function(x, options) {
+    x <- sub("<SQL>", "", x)
+    x <- gsub("CASE\n", "\n    CASE\n", x, fixed = TRUE)
+    x <- gsub("\nWHEN", "\n      WHEN", x, fixed = TRUE)
+    x <- gsub("\nEND", "\n    END", x, fixed = TRUE)
+    paste0("```sql", paste0(x, collapse = "\n"), "```")
+  })
+```
+
+
+```{r dbplyr, collapse=FALSE, comment=""}
 con <- 
   DBI::dbConnect(RSQLite::SQLite(), ":memory:") %>%
   add_case_when(cw_sex, cw_sexyverse)

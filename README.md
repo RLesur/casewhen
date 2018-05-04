@@ -114,39 +114,55 @@ people_db %>%
   mutate(sex_label = cw_sex(sex), 
          seek_label = cw_sex(seek)) %>%
   show_query()
-#> <SQL>
-#> SELECT `name`, `sex`, `seek`, CASE
-#> WHEN (`sex` = 'F') THEN ('Woman')
-#> WHEN (`sex` = 'M') THEN ('Man')
-#> WHEN (1) THEN (CAST(`sex` AS TEXT))
-#> END AS `sex_label`, CASE
-#> WHEN (`seek` = 'F') THEN ('Woman')
-#> WHEN (`seek` = 'M') THEN ('Man')
-#> WHEN (1) THEN (CAST(`seek` AS TEXT))
-#> END AS `seek_label`
-#> FROM `people`
+```
 
+``` sql
+SELECT `name`, `sex`, `seek`, 
+    CASE
+      WHEN (`sex` = 'F') THEN ('Woman')
+      WHEN (`sex` = 'M') THEN ('Man')
+      WHEN (1) THEN (CAST(`sex` AS TEXT))
+    END AS `sex_label`, 
+    CASE
+      WHEN (`seek` = 'F') THEN ('Woman')
+      WHEN (`seek` = 'M') THEN ('Man')
+      WHEN (1) THEN (CAST(`seek` AS TEXT))
+    END AS `seek_label`
+FROM `people`
+```
+
+``` r
 people_db %>%
   mutate(sex_label = cw_sexyverse(sex, "Human")) %>%
   show_query()
-#> <SQL>
-#> SELECT `name`, `sex`, `seek`, CASE
-#> WHEN (`sex` = 'F' OR `sex` = 'female' AND 'Human' = 'Human') THEN ('Woman')
-#> WHEN (`sex` = 'M' OR `sex` = 'male' AND 'Human' = 'Human') THEN ('Man')
-#> WHEN (1) THEN (CAST(`sex` AS TEXT))
-#> END AS `sex_label`
-#> FROM `people`
+```
 
+``` sql
+SELECT `name`, `sex`, `seek`, 
+    CASE
+      WHEN (`sex` = 'F' OR `sex` = 'female' AND 'Human' = 'Human') THEN ('Woman')
+      WHEN (`sex` = 'M' OR `sex` = 'male' AND 'Human' = 'Human') THEN ('Man')
+      WHEN (1) THEN (CAST(`sex` AS TEXT))
+    END AS `sex_label`
+FROM `people`
+```
+
+``` r
 starwars_db %>%
   mutate(sex_label = cw_sexyverse(gender, species)) %>%
   show_query()
-#> <SQL>
-#> SELECT `name`, `gender`, `species`, CASE
-#> WHEN (`gender` = 'F' OR `gender` = 'female' AND `species` = 'Human') THEN ('Woman')
-#> WHEN (`gender` = 'M' OR `gender` = 'male' AND `species` = 'Human') THEN ('Man')
-#> WHEN (1) THEN (CAST(`gender` AS TEXT))
-#> END AS `sex_label`
-#> FROM `starwars %>% select(name, gender, species)`
+```
 
+``` sql
+SELECT `name`, `gender`, `species`, 
+    CASE
+      WHEN (`gender` = 'F' OR `gender` = 'female' AND `species` = 'Human') THEN ('Woman')
+      WHEN (`gender` = 'M' OR `gender` = 'male' AND `species` = 'Human') THEN ('Man')
+      WHEN (1) THEN (CAST(`gender` AS TEXT))
+    END AS `sex_label`
+FROM `starwars %>% select(name, gender, species)`
+```
+
+``` r
 DBI::dbDisconnect(con)
 ```
