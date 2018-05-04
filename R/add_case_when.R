@@ -31,18 +31,15 @@ get_case_when_funs <- function(con) {
   fn_list[is_case_when(fn_list)]
 }
 
-#' Add a customised translation to a connection
-#' @param con A database connection.
-#' @param ... Other arguments.
-#' @export
-add_case_when <-
-  function(con, ...) UseMethod("add_case_when")
-
 #' Add a custom SQL translation to a DBI connection
 #'
 #' @return A new DBIConnection object.
 #' @param con A DBIConnection object.
 #' @param ... Not used.
+#' @export
+add_case_when <-
+  function(con, ...) UseMethod("add_case_when")
+
 #' @export
 add_case_when.DBIConnection <- function(con, ...) {
   fn_list <- list(...)
@@ -131,8 +128,10 @@ add_case_when.DBIConnection <- function(con, ...) {
   })
 }
 
+#' Show method for a CustomTranslation object
+#'
 #' @param object A customised connection.
-#' @rdname add_case_when.DBIConnection
+#' @keywords internal
 #' @export
 setMethod("show", "CustomTranslation", function(object) {
   con_class <- sub("CustomisedTranslation", "", class(object))

@@ -2,15 +2,18 @@
 % Please edit documentation in R/add_case_when.R
 \name{add_case_when}
 \alias{add_case_when}
-\title{Add a customised translation to a connection}
+\title{Add a custom SQL translation to a DBI connection}
 \usage{
 add_case_when(con, ...)
 }
 \arguments{
-\item{con}{A database connection.}
+\item{con}{A DBIConnection object.}
 
-\item{...}{Other arguments.}
+\item{...}{Not used.}
+}
+\value{
+A new DBIConnection object.
 }
 \description{
-Add a customised translation to a connection
+Add a custom SQL translation to a DBI connection
 }
