@@ -2,38 +2,73 @@
 % Please edit documentation in R/create_case_when.R
 \name{create_case_when}
 \alias{create_case_when}
-\title{A \code{case_when} factory}
+\alias{formulas.case_when}
+\alias{variable.names.case_when}
+\alias{print.case_when}
+\title{A case_when factory}
 \usage{
 create_case_when(..., vars = "x")
+
+\method{formulas}{case_when}(x, ...)
+
+\method{variable.names}{case_when}(object, ...)
+
+\method{print}{case_when}(x, ...)
 }
 \arguments{
-\item{...}{Arguments passed on to \code{dplyr::case_when}
-\describe{
-  \item{}{}
-}}
+\item{...}{A sequence of two-sided formulas. The left hand side (LHS)
+determines which values match this case. The right hand side (RHS)
+provides the replacement value.
 
-\item{vars}{A character vector.}
+The LHS must evaluate to a logical vector. Each logical vector can
+either have length 1 or a common length. All RHSs must evaluate to
+the same type of vector.
+
+These dots are evaluated with \link[rlang:dots_list]{explicit splicing}.}
+
+\item{vars}{A character vector that determined the names of the arguments
+of the returned function.}
 }
 \value{
-A function, usable in place of \code{dplyr::case_when}.
+A function, usable in place of \code{\link[dplyr:case_when]{dplyr::case_when()}}.
 }
 \description{
-This function allows to create reusable \code{dplyr::case_when()} functions.
+\code{create_case_when} allows to create reusable \code{\link[dplyr:case_when]{dplyr::case_when()}} functions.
+It returns a function that can be used in place of
+\code{\link[dplyr:case_when]{dplyr::case_when()}}. The arguments of the returned function are
+determined by the \code{vars} argument of \code{create_case_when()}.
 }
-\examples{
-library(dplyr)
+\details{
+The returned function is of class \code{case_when}.
+}
+\section{Methods (by generic)}{
+\itemize{
+\item \code{formulas}: Get the formulas of a \code{case_when} function.
 
-people <- tribble(
-  ~name, ~sex, ~seek,
-  "Mary", "F", "M",
-  "Henry", "M", "F"
+\item \code{variable.names}: Get the variable names of a \code{case_when} function.
+
+\item \code{print}: Print informations about a \code{case_when} function.
+}}
+
+\examples{
+x <- 1:50
+y <- 51:100
+
+cw_fb <- create_case_when(
+  number \%\% 35 == 0 ~ "fizz buzz",
+  number \%\% 5 == 0 ~ "fizz",
+  number \%\% 7 == 0 ~ "buzz",
+  TRUE ~ as.character(number),
+  vars = "number"
 )
 
-cw_sex <- create_case_when(x == "F" ~ "Woman",
-                           x == "M" ~ "Man",
-                           TRUE ~ as.character(x),
-                           vars = c("x"))
+cw_fb(number = x)
+cw_fb(number = y)
 
-people \%>\%
-  mutate(sex_label = cw_sex(sex), seek_label = cw_sex(seek))
+# Formulas and variable names can be extracted
+patterns <- formulas(cw_fb)
+var_name <- variable.names(cw_fb)
+
+# Dots support splicing
+create_case_when(!!! patterns, vars = var_name)
 }

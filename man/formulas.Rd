@@ -17,3 +17,4 @@ A list of \code{formula} objects.
 \description{
 \code{formulas} retrieves formulas from an object that depends on.
 }
+\keyword{internal}

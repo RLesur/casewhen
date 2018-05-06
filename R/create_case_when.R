@@ -9,30 +9,41 @@
 #' @importFrom stats variable.names
 NULL
 
-#' A `case_when` factory
+#' A case_when factory
 #'
-#' This function allows to create reusable `dplyr::case_when()` functions.
+#' `create_case_when` allows to create reusable [dplyr::case_when()] functions.
+#'  It returns a function that can be used in place of
+#'     [dplyr::case_when()]. The arguments of the returned function are
+#'     determined by the `vars` argument of `create_case_when()`.
 #'
-#' @inheritDotParams dplyr::case_when
-#' @param vars A character vector.
-#' @return A function, usable in place of `dplyr::case_when`.
+#' The returned function is of class `case_when`.
+#'
+#' @inheritParams dplyr::case_when
+#' @param vars A character vector that determined the names of the arguments
+#'     of the returned function.
+#' @return A function, usable in place of [dplyr::case_when()].
 #' @export
 #' @examples
-#' library(dplyr)
+#' x <- 1:50
+#' y <- 51:100
 #'
-#' people <- tribble(
-#'   ~name, ~sex, ~seek,
-#'   "Mary", "F", "M",
-#'   "Henry", "M", "F"
+#' cw_fb <- create_case_when(
+#'   number %% 35 == 0 ~ "fizz buzz",
+#'   number %% 5 == 0 ~ "fizz",
+#'   number %% 7 == 0 ~ "buzz",
+#'   TRUE ~ as.character(number),
+#'   vars = "number"
 #' )
 #'
-#' cw_sex <- create_case_when(x == "F" ~ "Woman",
-#'                            x == "M" ~ "Man",
-#'                            TRUE ~ as.character(x),
-#'                            vars = c("x"))
+#' cw_fb(number = x)
+#' cw_fb(number = y)
 #'
-#' people %>%
-#'   mutate(sex_label = cw_sex(sex), seek_label = cw_sex(seek))
+#' # Formulas and variable names can be extracted
+#' patterns <- formulas(cw_fb)
+#' var_name <- variable.names(cw_fb)
+#'
+#' # Dots support splicing
+#' create_case_when(!!! patterns, vars = var_name)
 create_case_when <- function(..., vars = "x") {
   formulas <- rlang::dots_list(...)
   structure(
@@ -41,21 +52,42 @@ create_case_when <- function(..., vars = "x") {
   )
 }
 
-#' Create a SQL translation of a case_when function
+#' Create a reusable SQL case_when function
 #'
-#' @param ... A sequence of thwo sided formulas. The left hand side (LHS)
-#'     determines which values match this case.The right hand side (RHS)
-#'     provides the replacement value.
-#'
-#' The LHS must evaluate to a logical vector. Each logical vector can
-#'     either have length 1 or a common length. All RHSs must evaluate to
-#'     the same type of vector.
-#'
-#' These dots are evaluated with [explicit splicing](dplyr::tidy-dots).
 #' @inheritParams create_case_when
 #' @inheritParams dplyr::sql_translate_env
 #' @keywords internal
 #' @export
+#' @examples
+#' library(dplyr)
+#' library(dbplyr)
+#'
+#' con <- structure(
+#'   list(),
+#'   class = c("TestCon", "DBITestConnection", "DBIConnection")
+#' )
+#'
+#' cw_fb <- create_sql_case_when(
+#'   number %% 35 == 0 ~ "fizz buzz",
+#'   number %% 5 == 0 ~ "fizz",
+#'   number %% 7 == 0 ~ "buzz",
+#'   TRUE ~ as.character(number),
+#'   vars = "number",
+#'   con = con
+#' )
+#'
+#' testcon_var <- sql_variant(
+#'   sql_translator(
+#'     cw_fb = cw_fb,
+#'     .parent = sql_translate_env(con)$scalar
+#'   ),
+#'   sql_translate_env(con)$aggregate,
+#'   sql_translate_env(con)$window
+#' )
+#'
+#' sql_translate_env.TestCon <- function(x) testcon_var
+#'
+#' translate_sql(cw_fb(x), con = con)
 create_sql_case_when <- function(..., vars = "x", con = NULL) {
   formulas <- rlang::dots_list(...)
   case_when_con <- dplyr::sql_translate_env(con = con)$scalar$case_when
@@ -78,15 +110,19 @@ is_case_when <- function(x) {
 #' @export
 #' @param x An object used to select a method.
 #' @param ... Other arguments passed on to methods.
+#' @keywords internal
 #' @return A list of `formula` objects.
 formulas <- function(x, ...) UseMethod("formulas")
 
+#' @describeIn create_case_when Get the formulas of a `case_when` function.
 #' @export
 formulas.case_when <- function(x, ...) get("formulas", envir = environment(x))
 
+#' @describeIn create_case_when Get the variable names of a `case_when` function.
 #' @export
 variable.names.case_when <- function(object, ...) get("vars", envir = environment(object))
 
+#' @describeIn create_case_when Print informations about a `case_when` function.
 #' @export
 print.case_when <- function(x, ...) {
   formulas <- formulas(x)

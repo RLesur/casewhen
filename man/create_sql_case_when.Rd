@@ -2,26 +2,58 @@
 % Please edit documentation in R/create_case_when.R
 \name{create_sql_case_when}
 \alias{create_sql_case_when}
-\title{Create a SQL translation of a case_when function}
+\title{Create a reusable SQL case_when function}
 \usage{
 create_sql_case_when(..., vars = "x", con = NULL)
 }
 \arguments{
-\item{...}{A sequence of thwo sided formulas. The left hand side (LHS)
-determines which values match this case.The right hand side (RHS)
+\item{...}{A sequence of two-sided formulas. The left hand side (LHS)
+determines which values match this case. The right hand side (RHS)
 provides the replacement value.
 
 The LHS must evaluate to a logical vector. Each logical vector can
 either have length 1 or a common length. All RHSs must evaluate to
 the same type of vector.
 
-These dots are evaluated with \href{dplyr::tidy-dots}{explicit splicing}.}
+These dots are evaluated with \link[rlang:dots_list]{explicit splicing}.}
 
-\item{vars}{A character vector.}
+\item{vars}{A character vector that determined the names of the arguments
+of the returned function.}
 
 \item{con}{A database connection.}
 }
 \description{
-Create a SQL translation of a case_when function
+Create a reusable SQL case_when function
+}
+\examples{
+library(dplyr)
+library(dbplyr)
+
+con <- structure(
+  list(),
+  class = c("TestCon", "DBITestConnection", "DBIConnection")
+)
+
+cw_fb <- create_sql_case_when(
+  number \%\% 35 == 0 ~ "fizz buzz",
+  number \%\% 5 == 0 ~ "fizz",
+  number \%\% 7 == 0 ~ "buzz",
+  TRUE ~ as.character(number),
+  vars = "number",
+  con = con
+)
+
+testcon_var <- sql_variant(
+  sql_translator(
+    cw_fb = cw_fb,
+    .parent = sql_translate_env(con)$scalar
+  ),
+  sql_translate_env(con)$aggregate,
+  sql_translate_env(con)$window
+)
+
+sql_translate_env.TestCon <- function(x) testcon_var
+
+translate_sql(cw_fb(x), con = con)
 }
 \keyword{internal}

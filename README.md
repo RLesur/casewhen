@@ -49,10 +49,12 @@ people <-
     "Henry", "M", "F"
   )
 
-cw_sex <- create_case_when(x == "F" ~ "Woman",
-                           x == "M" ~ "Man",
-                           TRUE ~ as.character(x),
-                           vars = "x")
+cw_sex <- create_case_when(
+  x == "F" ~ "Woman",
+  x == "M" ~ "Man",
+  TRUE ~ as.character(x),
+  vars = "x"
+)
 
 people %>% 
   mutate(sex_label = cw_sex(sex), 
@@ -68,12 +70,12 @@ Reusing a `case_when()` function is mainly convenient when the same
 transformation is performed across different datasets.
 
 ``` r
-cw_sexyverse <- 
-  create_case_when(x == "F" | x == "female" & y == "Human" ~ "Woman",
-                   x == "M" | x == "male" & y == "Human" ~ "Man",
-                   TRUE ~ as.character(x),
-                   vars = c("x", "y")
-                   )
+cw_sexyverse <- create_case_when(
+  x == "F" | x == "female" & y == "Human" ~ "Woman",
+  x == "M" | x == "male" & y == "Human" ~ "Man",
+  TRUE ~ as.character(x),
+  vars = c("x", "y")
+)
 
 people %>% 
   mutate(sex_label = cw_sexyverse(sex, "Human"))
@@ -116,6 +118,8 @@ people_db %>%
   show_query()
 ```
 
+**`<SQL>`**
+
 ``` sql
 SELECT `name`, `sex`, `seek`, 
     CASE
@@ -137,6 +141,8 @@ people_db %>%
   show_query()
 ```
 
+**`<SQL>`**
+
 ``` sql
 SELECT `name`, `sex`, `seek`, 
     CASE
@@ -152,6 +158,8 @@ starwars_db %>%
   mutate(sex_label = cw_sexyverse(gender, species)) %>%
   show_query()
 ```
+
+**`<SQL>`**
 
 ``` sql
 SELECT `name`, `gender`, `species`, 

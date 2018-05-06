@@ -47,10 +47,12 @@ people <-
     "Henry", "M", "F"
   )
 
-cw_sex <- create_case_when(x == "F" ~ "Woman",
-                           x == "M" ~ "Man",
-                           TRUE ~ as.character(x),
-                           vars = "x")
+cw_sex <- create_case_when(
+  x == "F" ~ "Woman",
+  x == "M" ~ "Man",
+  TRUE ~ as.character(x),
+  vars = "x"
+)
 
 people %>% 
   mutate(sex_label = cw_sex(sex), 
@@ -60,12 +62,12 @@ people %>%
 Reusing a `case_when()` function is mainly convenient when the same transformation is performed across different datasets. 
 
 ```{r example2, message=FALSE}
-cw_sexyverse <- 
-  create_case_when(x == "F" | x == "female" & y == "Human" ~ "Woman",
-                   x == "M" | x == "male" & y == "Human" ~ "Man",
-                   TRUE ~ as.character(x),
-                   vars = c("x", "y")
-                   )
+cw_sexyverse <- create_case_when(
+  x == "F" | x == "female" & y == "Human" ~ "Woman",
+  x == "M" | x == "male" & y == "Human" ~ "Man",
+  TRUE ~ as.character(x),
+  vars = c("x", "y")
+)
 
 people %>% 
   mutate(sex_label = cw_sexyverse(sex, "Human"))
@@ -87,8 +89,9 @@ knitr::knit_hooks$set(
     x <- gsub("CASE\n", "\n    CASE\n", x, fixed = TRUE)
     x <- gsub("\nWHEN", "\n      WHEN", x, fixed = TRUE)
     x <- gsub("\nEND", "\n    END", x, fixed = TRUE)
-    paste0("```sql", paste0(x, collapse = "\n"), "```")
-  })
+    paste0("**`<SQL>`**\n```sql", paste0(x, collapse = "\n"), "```")
+  }
+)
 ```
 
 
