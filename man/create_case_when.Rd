@@ -16,18 +16,12 @@ create_case_when(..., vars = "x")
 \method{print}{case_when}(x, ...)
 }
 \arguments{
-\item{...}{A sequence of two-sided formulas. The left hand side (LHS)
-determines which values match this case. The right hand side (RHS)
-provides the replacement value.
-
-The LHS must evaluate to a logical vector. Each logical vector can
-either have length 1 or a common length. All RHSs must evaluate to
-the same type of vector.
-
-These dots are evaluated with \link[rlang:dots_list]{explicit splicing}.}
+\item{...}{For \code{formulas}, \code{variable.names} and \code{print}: not used.}
 
 \item{vars}{A character vector that determined the names of the arguments
 of the returned function.}
+
+\item{x, object}{A \code{case_when} function, created by \code{create_case_when}.}
 }
 \value{
 A function, usable in place of \code{\link[dplyr:case_when]{dplyr::case_when()}}.

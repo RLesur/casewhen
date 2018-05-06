@@ -115,6 +115,7 @@ is_case_when <- function(x) {
 formulas <- function(x, ...) UseMethod("formulas")
 
 #' @describeIn create_case_when Get the formulas of a `case_when` function.
+#' @param x,object A `case_when` function, created by `create_case_when`.
 #' @export
 formulas.case_when <- function(x, ...) get("formulas", envir = environment(x))
 
