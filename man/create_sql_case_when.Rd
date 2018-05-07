@@ -27,8 +27,8 @@ of the returned function.}
 }
 \description{
 This function is a helper devoted to developers that want to add a custom
-\code{case_when} function to a SQL variant. In this case, you should not use the
-\code{con} argument and use the \code{fn} argument instead.
+\code{case_when} function to a SQL variant. In this case, you should use the
+\code{fn} argument instead of the \code{con} argument.
 }
 \examples{
 con <- structure(

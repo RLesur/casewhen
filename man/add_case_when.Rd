@@ -17,3 +17,6 @@ A new DBIConnection object.
 \description{
 Add a custom SQL translation to a DBI connection
 }
+\seealso{
+\link{create_sql_case_when}
+}

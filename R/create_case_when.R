@@ -55,8 +55,8 @@ create_case_when <- function(..., vars = "x") {
 #' Create a reusable SQL case_when function
 #'
 #' This function is a helper devoted to developers that want to add a custom
-#' `case_when` function to a SQL variant. In this case, you should not use the
-#' `con` argument and use the `fn` argument instead.
+#' `case_when` function to a SQL variant. In this case, you should use the
+#' `fn` argument instead of the `con` argument.
 #'
 #' @inheritParams create_case_when
 #' @inheritParams dplyr::sql_translate_env

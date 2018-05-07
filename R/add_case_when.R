@@ -36,6 +36,7 @@ get_case_when_funs <- function(con) {
 #' @return A new DBIConnection object.
 #' @param con A DBIConnection object.
 #' @param ... Not used.
+#' @seealso [create_sql_case_when]
 #' @export
 add_case_when <-
   function(con, ...) UseMethod("add_case_when")
