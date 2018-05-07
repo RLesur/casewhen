@@ -4,27 +4,39 @@
 \alias{create_sql_case_when}
 \title{Create a reusable SQL case_when function}
 \usage{
-create_sql_case_when(..., vars = "x", con = NULL)
+create_sql_case_when(..., vars = "x", con = NULL,
+  fn = dplyr::sql_translate_env(con = con)$scalar$case_when)
 }
 \arguments{
-\item{...}{For \code{formulas}, \code{variable.names} and \code{print}: not used.}
+\item{...}{A sequence of two-sided formulas. The left hand side (LHS)
+determines which values match this case. The right hand side (RHS)
+provides the replacement value.
+
+The LHS must evaluate to a logical vector. Each logical vector can
+either have length 1 or a common length. All RHSs must evaluate to
+the same type of vector.
+
+These dots are evaluated with \link[rlang:dots_list]{explicit splicing}.}
 
 \item{vars}{A character vector that determined the names of the arguments
 of the returned function.}
 
 \item{con}{A database connection.}
+
+\item{fn}{A function to be used to create the \code{case_when} function.}
 }
 \description{
-Create a reusable SQL case_when function
+This function is a helper devoted to developers that want to add a custom
+\code{case_when} function to a SQL variant. In this case, you should not use the
+\code{con} argument and use the \code{fn} argument instead.
 }
 \examples{
-library(dplyr)
-library(dbplyr)
-
 con <- structure(
   list(),
-  class = c("TestCon", "DBITestConnection", "DBIConnection")
+  class = c("TestCon", "Oracle", "DBITestConnection", "DBIConnection")
 )
+
+fn <- dplyr::sql_translate_env(con)$scalar$case_when
 
 cw_fb <- create_sql_case_when(
   number \%\% 35 == 0 ~ "fizz buzz",
@@ -32,20 +44,20 @@ cw_fb <- create_sql_case_when(
   number \%\% 7 == 0 ~ "buzz",
   TRUE ~ as.character(number),
   vars = "number",
-  con = con
+  fn = fn
 )
 
-testcon_var <- sql_variant(
-  sql_translator(
+testcon_var <- dbplyr::sql_variant(
+  dbplyr::sql_translator(
     cw_fb = cw_fb,
-    .parent = sql_translate_env(con)$scalar
+    .parent = dplyr::sql_translate_env(con)$scalar
   ),
-  sql_translate_env(con)$aggregate,
-  sql_translate_env(con)$window
+  dplyr::sql_translate_env(con)$aggregate,
+  dplyr::sql_translate_env(con)$window
 )
 
 sql_translate_env.TestCon <- function(x) testcon_var
 
-translate_sql(cw_fb(x), con = con)
+dbplyr::translate_sql(cw_fb(x), con = con)
 }
 \keyword{internal}

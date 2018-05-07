@@ -54,18 +54,22 @@ create_case_when <- function(..., vars = "x") {
 
 #' Create a reusable SQL case_when function
 #'
+#' This function is a helper devoted to developers that want to add a custom
+#' `case_when` function to a SQL variant. In this case, you should not use the
+#' `con` argument and use the `fn` argument instead.
+#'
 #' @inheritParams create_case_when
 #' @inheritParams dplyr::sql_translate_env
+#' @param fn A function to be used to create the `case_when` function.
 #' @keywords internal
 #' @export
 #' @examples
-#' library(dplyr)
-#' library(dbplyr)
-#'
 #' con <- structure(
 #'   list(),
-#'   class = c("TestCon", "DBITestConnection", "DBIConnection")
+#'   class = c("TestCon", "Oracle", "DBITestConnection", "DBIConnection")
 #' )
+#'
+#' fn <- dplyr::sql_translate_env(con)$scalar$case_when
 #'
 #' cw_fb <- create_sql_case_when(
 #'   number %% 35 == 0 ~ "fizz buzz",
@@ -73,29 +77,33 @@ create_case_when <- function(..., vars = "x") {
 #'   number %% 7 == 0 ~ "buzz",
 #'   TRUE ~ as.character(number),
 #'   vars = "number",
-#'   con = con
+#'   fn = fn
 #' )
 #'
-#' testcon_var <- sql_variant(
-#'   sql_translator(
+#' testcon_var <- dbplyr::sql_variant(
+#'   dbplyr::sql_translator(
 #'     cw_fb = cw_fb,
-#'     .parent = sql_translate_env(con)$scalar
+#'     .parent = dplyr::sql_translate_env(con)$scalar
 #'   ),
-#'   sql_translate_env(con)$aggregate,
-#'   sql_translate_env(con)$window
+#'   dplyr::sql_translate_env(con)$aggregate,
+#'   dplyr::sql_translate_env(con)$window
 #' )
 #'
 #' sql_translate_env.TestCon <- function(x) testcon_var
 #'
-#' translate_sql(cw_fb(x), con = con)
-create_sql_case_when <- function(..., vars = "x", con = NULL) {
-  formulas <- rlang::dots_list(...)
-  case_when_con <- dplyr::sql_translate_env(con = con)$scalar$case_when
-  args <- c(formulas, list(vars = vars, fn = case_when_con))
-  structure(
-    do.call(.create_case_when, args),
-    class = c("sql_case_when", "case_when", "function")
-  )
+#' dbplyr::translate_sql(cw_fb(x), con = con)
+create_sql_case_when <-
+  function(...,
+           vars = "x",
+           con = NULL,
+           fn = dplyr::sql_translate_env(con = con)$scalar$case_when
+  ) {
+    formulas <- rlang::dots_list(...)
+    args <- c(formulas, list(vars = vars, fn = fn))
+    structure(
+      do.call(.create_case_when, args),
+      class = c("sql_case_when", "case_when", "function")
+    )
 }
 
 is_case_when <- function(x) {
