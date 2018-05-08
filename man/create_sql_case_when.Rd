@@ -26,11 +26,12 @@ of the returned function.}
 \item{fn}{A function to be used by the returned function.}
 }
 \description{
-This function is a helper devoted to developers that want to add a custom
+This function is a helper devoted to developers who want to add a custom
 \code{case_when} function to a \link[dbplyr:sql_variant]{SQL translator}. In this case,
 you should use the \code{fn} argument instead of the \code{con} argument.
 }
 \examples{
+\dontrun{
 con <- structure(
   list(),
   class = c("TestCon", "Oracle", "DBITestConnection", "DBIConnection")
@@ -58,6 +59,6 @@ testcon_var <- dbplyr::sql_variant(
 
 sql_translate_env.TestCon <- function(x) testcon_var
 
-dbplyr::translate_sql(cw_fb(x), con = con)
+dbplyr::translate_sql(cw_fb(x), con = con)}
 }
 \keyword{internal}
