@@ -40,12 +40,11 @@ With `casewhen`, you can easily create reusable `dplyr::case_when()` functions w
 library(dplyr)
 library(casewhen)
 
-people <-
-  tribble(
-    ~name, ~sex, ~seek,
-    "Mary", "F", "M",
-    "Henry", "M", "F"
-  )
+people <- tribble(
+  ~name, ~sex, ~seek,
+  "Mary", "F", "M",
+  "Henry", "M", "F"
+)
 
 cw_sex <- create_case_when(
   x == "F" ~ "Woman",

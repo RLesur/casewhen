@@ -31,12 +31,49 @@ get_case_when_funs <- function(con) {
   fn_list[is_case_when(fn_list)]
 }
 
-#' Add a custom SQL translation to a DBI connection
+#' Use a case_when function against a database
 #'
-#' @return A new DBIConnection object.
-#' @param con A DBIConnection object.
+#' `add_case_when` is useful when you have previously created a `case_when`
+#' function with [create_case_when()] and want to use it against a database
+#' with [dbplyr][dbplyr::dbplyr].
+#'
+#' In order to be safely used with a pipe, `add_case_when` does not throw any
+#' error. In case of internal error, the original connection object is returned
+#' with warning.
+#'
+#' @param con A [DBIConnection][DBI::DBIConnection-class] object.
 #' @param ... Not used.
-#' @seealso [create_sql_case_when]
+#' @return A new DBIConnection object with a customised translation.
+#' @seealso [create_case_when], [create_sql_case_when]
+#' @examples \dontrun{
+#' library(dplyr)
+#'
+#' cw_fb <- create_case_when(
+#'   number %% 35 == 0 ~ "fizz buzz",
+#'   number %% 5 == 0 ~ "fizz",
+#'   number %% 7 == 0 ~ "buzz",
+#'   TRUE ~ as.character(number),
+#'   vars = "number"
+#' )
+#'
+#' con <-
+#'   DBI::dbConnect(RSQLite::SQLite(), ":memory:") %>%
+#'   add_case_when(cw_fb)
+#'
+#' # You can print con to retrieve informations about custom translation
+#' con
+#'
+#' numbers <- copy_to(con, data.frame(x = 1:50, y = 51:100), "numbers")
+#'
+#' fizzbuzz <-
+#'   numbers %>%
+#'   mutate(fb_x = cw_fb(x), fb_y = cw_fb(y))
+#'
+#' fizzbuzz %>% show_query()
+#'
+#' fizzbuzz %>% collect()
+#'
+#' DBI::dbDisconnect(con)}
 #' @export
 add_case_when <-
   function(con, ...) UseMethod("add_case_when")
@@ -97,6 +134,8 @@ add_case_when.DBIConnection <- function(con, ...) {
         new_class <- paste0("CustomisedTranslation", connection_class)
         # Create a new formal class
         if (!isClass(new_class, where = cacheClasses))
+          # The following class creation permits to use this package with any
+          # unknown DBIConnection
           setClass(new_class,
                    contains = c("CustomTranslation", connection_class),
                    where = cacheClasses
@@ -137,5 +176,6 @@ add_case_when.DBIConnection <- function(con, ...) {
 setMethod("show", "CustomTranslation", function(object) {
   con_class <- sub("CustomisedTranslation", "", class(object))
   getMethod("show", con_class)(object)
+  cat("<Functions added to customised translation>\n")
   print(get_case_when_funs(object))
 })

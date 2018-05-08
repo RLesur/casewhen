@@ -13,8 +13,8 @@ NULL
 #'
 #' `create_case_when` allows to create reusable [dplyr::case_when()] functions.
 #'  It returns a function that can be used in place of
-#'     [dplyr::case_when()]. The arguments of the returned function are
-#'     determined by the `vars` argument of `create_case_when()`.
+#'  [dplyr::case_when()]. The arguments of the returned function are
+#'  given by the `vars` argument of `create_case_when()`.
 #'
 #' The returned function is of class `case_when`.
 #'
@@ -54,16 +54,16 @@ create_case_when <- function(..., vars = "x") {
 
 #' Create a reusable SQL case_when function
 #'
-#' This function is a helper devoted to developers that want to add a custom
-#' `case_when` function to a SQL variant. In this case, you should use the
-#' `fn` argument instead of the `con` argument.
+#' This function is a helper devoted to developers who want to add a custom
+#' `case_when` function to a [SQL translator][dbplyr::sql_variant()]. In this case,
+#' you should use the `fn` argument instead of the `con` argument.
 #'
 #' @inheritParams create_case_when
 #' @inheritParams dplyr::sql_translate_env
-#' @param fn A function to be used to create the `case_when` function.
+#' @param fn A function to be used by the returned function.
 #' @keywords internal
 #' @export
-#' @examples
+#' @examples\dontrun{
 #' con <- structure(
 #'   list(),
 #'   class = c("TestCon", "Oracle", "DBITestConnection", "DBIConnection")
@@ -91,7 +91,7 @@ create_case_when <- function(..., vars = "x") {
 #'
 #' sql_translate_env.TestCon <- function(x) testcon_var
 #'
-#' dbplyr::translate_sql(cw_fb(x), con = con)
+#' dbplyr::translate_sql(cw_fb(x), con = con)}
 create_sql_case_when <-
   function(...,
            vars = "x",

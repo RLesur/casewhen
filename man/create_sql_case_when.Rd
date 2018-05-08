@@ -23,12 +23,12 @@ of the returned function.}
 
 \item{con}{A database connection.}
 
-\item{fn}{A function to be used to create the \code{case_when} function.}
+\item{fn}{A function to be used by the returned function.}
 }
 \description{
 This function is a helper devoted to developers that want to add a custom
-\code{case_when} function to a SQL variant. In this case, you should use the
-\code{fn} argument instead of the \code{con} argument.
+\code{case_when} function to a \link[dbplyr:sql_variant]{SQL translator}. In this case,
+you should use the \code{fn} argument instead of the \code{con} argument.
 }
 \examples{
 con <- structure(

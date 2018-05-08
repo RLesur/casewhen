@@ -2,21 +2,59 @@
 % Please edit documentation in R/add_case_when.R
 \name{add_case_when}
 \alias{add_case_when}
-\title{Add a custom SQL translation to a DBI connection}
+\title{Use a case_when function against a database}
 \usage{
 add_case_when(con, ...)
 }
 \arguments{
-\item{con}{A DBIConnection object.}
+\item{con}{A \link[DBI:DBIConnection-class]{DBIConnection} object.}
 
 \item{...}{Not used.}
 }
 \value{
-A new DBIConnection object.
+A new DBIConnection object with a customised translation.
 }
 \description{
-Add a custom SQL translation to a DBI connection
+\code{add_case_when} is useful when you have previously created a \code{case_when}
+function with \code{\link[=create_case_when]{create_case_when()}} and want to use it against a database
+with \link[dbplyr:dbplyr]{dbplyr}.
+}
+\details{
+In order to be safely used with a pipe, \code{add_case_when} does not throw any
+error. In case of internal error, the original connection object is returned
+with warning.
+}
+\examples{
+\dontrun{
+library(dplyr)
+
+cw_fb <- create_case_when(
+  number \%\% 35 == 0 ~ "fizz buzz",
+  number \%\% 5 == 0 ~ "fizz",
+  number \%\% 7 == 0 ~ "buzz",
+  TRUE ~ as.character(number),
+  vars = "number"
+)
+
+con <-
+  DBI::dbConnect(RSQLite::SQLite(), ":memory:") \%>\%
+  add_case_when(cw_fb)
+
+# You can print con to retrieve informations about custom translation
+con
+
+numbers <- copy_to(con, data.frame(x = 1:50, y = 51:100), "numbers")
+
+fizzbuzz <-
+  numbers \%>\%
+  mutate(fb_x = cw_fb(x), fb_y = cw_fb(y))
+
+fizzbuzz \%>\% show_query()
+
+fizzbuzz \%>\% collect()
+
+DBI::dbDisconnect(con)}
 }
 \seealso{
-\link{create_sql_case_when}
+\link{create_case_when}, \link{create_sql_case_when}
 }

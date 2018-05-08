@@ -42,12 +42,11 @@ functions with the function `create_case_when()`:
 library(dplyr)
 library(casewhen)
 
-people <-
-  tribble(
-    ~name, ~sex, ~seek,
-    "Mary", "F", "M",
-    "Henry", "M", "F"
-  )
+people <- tribble(
+  ~name, ~sex, ~seek,
+  "Mary", "F", "M",
+  "Henry", "M", "F"
+)
 
 cw_sex <- create_case_when(
   x == "F" ~ "Woman",

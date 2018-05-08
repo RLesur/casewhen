@@ -38,7 +38,7 @@ A function, usable in place of \code{\link[dplyr:case_when]{dplyr::case_when()}}
 \code{create_case_when} allows to create reusable \code{\link[dplyr:case_when]{dplyr::case_when()}} functions.
 It returns a function that can be used in place of
 \code{\link[dplyr:case_when]{dplyr::case_when()}}. The arguments of the returned function are
-determined by the \code{vars} argument of \code{create_case_when()}.
+given by the \code{vars} argument of \code{create_case_when()}.
 }
 \details{
 The returned function is of class \code{case_when}.
