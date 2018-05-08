@@ -77,8 +77,8 @@ test_that("show method throws output", {
   expect_output(show(con2), regexp = "<SQLiteConnection>")
 })
 
-# This test must be the last one
-# Otherwise, next tests will fail
+# This test must be the last one.
+# Otherwise, next tests will fail.
 test_that("Unexpected error throws a warning and original object is returned", {
   methods::setClass("CustomisedTranslationSQLiteConnection", where = casewhen:::cacheClasses)
   expect_warning(con2 <- add_case_when(con, cw_sex), regexp = "error has occurred")
