@@ -63,7 +63,7 @@ create_case_when <- function(..., vars = "x") {
 #' @param fn A function to be used by the returned function.
 #' @keywords internal
 #' @export
-#' @examples\dontrun{
+#' @examples
 #' con <- structure(
 #'   list(),
 #'   class = c("TestCon", "Oracle", "DBITestConnection", "DBIConnection")
@@ -91,7 +91,7 @@ create_case_when <- function(..., vars = "x") {
 #'
 #' sql_translate_env.TestCon <- function(x) testcon_var
 #'
-#' dbplyr::translate_sql(cw_fb(x), con = con)}
+#' dbplyr::translate_sql(cw_fb(x), con = con)
 create_sql_case_when <-
   function(...,
            vars = "x",

@@ -4,10 +4,19 @@
 \name{casewhen-package}
 \alias{casewhen}
 \alias{casewhen-package}
-\title{casewhen: Reusable "case_when" Functions}
+\title{casewhen: Create Reusable 'dplyr' 'case_when()' Functions}
 \description{
-With 'casewhen' package, you can create 'dplyr::case_when()' functions
-that might be use many times.
+Helpers to avoid repetition of similar 'case_when()' functions when
+performing data wrangling with the 'dplyr' package. It also works with the
+'dbplyr' package.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/RLesur/casewhen#readme}
+  \item Report bugs at \url{https://github.com/RLesur/casewhen/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Romain Lesur \email{romain.lesur@gmail.com}

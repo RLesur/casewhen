@@ -45,35 +45,37 @@ get_case_when_funs <- function(con) {
 #' @param ... Not used.
 #' @return A new DBIConnection object with a customised translation.
 #' @seealso [create_case_when], [create_sql_case_when]
-#' @examples \dontrun{
-#' library(dplyr)
+#' @examples
+#' if (requireNamespace("RSQLite", quietly = TRUE)) {
+#'   library(dplyr)
 #'
-#' cw_fb <- create_case_when(
-#'   number %% 35 == 0 ~ "fizz buzz",
-#'   number %% 5 == 0 ~ "fizz",
-#'   number %% 7 == 0 ~ "buzz",
-#'   TRUE ~ as.character(number),
-#'   vars = "number"
-#' )
+#'   cw_fb <- create_case_when(
+#'     number %% 35 == 0 ~ "fizz buzz",
+#'     number %% 5 == 0 ~ "fizz",
+#'     number %% 7 == 0 ~ "buzz",
+#'     TRUE ~ as.character(number),
+#'     vars = "number"
+#'   )
 #'
-#' con <-
-#'   DBI::dbConnect(RSQLite::SQLite(), ":memory:") %>%
-#'   add_case_when(cw_fb)
+#'   con <-
+#'     DBI::dbConnect(RSQLite::SQLite(), ":memory:") %>%
+#'     add_case_when(cw_fb)
 #'
-#' # You can print con to retrieve informations about custom translation
-#' con
+#'   # You can print con to retrieve informations about custom translation
+#'   con
 #'
-#' numbers <- copy_to(con, data.frame(x = 1:50, y = 51:100), "numbers")
+#'   numbers <- copy_to(con, data.frame(x = 1:50, y = 51:100), "numbers")
 #'
-#' fizzbuzz <-
-#'   numbers %>%
-#'   mutate(fb_x = cw_fb(x), fb_y = cw_fb(y))
+#'   fizzbuzz <-
+#'     numbers %>%
+#'     mutate(fb_x = cw_fb(x), fb_y = cw_fb(y))
 #'
-#' fizzbuzz %>% show_query()
+#'   fizzbuzz %>% show_query()
 #'
-#' fizzbuzz %>% collect()
+#'   fizzbuzz %>% collect()
 #'
-#' DBI::dbDisconnect(con)}
+#'   DBI::dbDisconnect(con)
+#' }
 #' @export
 add_case_when <-
   function(con, ...) UseMethod("add_case_when")

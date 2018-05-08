@@ -31,7 +31,6 @@ This function is a helper devoted to developers who want to add a custom
 you should use the \code{fn} argument instead of the \code{con} argument.
 }
 \examples{
-\dontrun{
 con <- structure(
   list(),
   class = c("TestCon", "Oracle", "DBITestConnection", "DBIConnection")
@@ -59,6 +58,6 @@ testcon_var <- dbplyr::sql_variant(
 
 sql_translate_env.TestCon <- function(x) testcon_var
 
-dbplyr::translate_sql(cw_fb(x), con = con)}
+dbplyr::translate_sql(cw_fb(x), con = con)
 }
 \keyword{internal}
