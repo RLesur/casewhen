@@ -3,7 +3,6 @@
 language: R
 sudo: false
 cache: packages
-r_packages: devtools
 
 r:
 - 3.2
@@ -11,6 +10,8 @@ r:
 - 3.4
 - release
 - devel
+
+r_packages: devtools
 
 after_success:
   - Rscript -e 'covr::codecov()'
